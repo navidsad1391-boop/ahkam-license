@@ -34,7 +34,6 @@ button:hover { opacity: 0.9; }
 .result-box { background: #e8f5e9; border: 2px solid #4caf50; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
 .result-box h3 { color: #2e7d32; }
 .error { background: #ffebee; color: #c62828; padding: 10px; border-radius: 8px; margin: 10px 0; }
-.warning { background: #fff3e0; color: #e65100; padding: 10px; border-radius: 8px; margin: 10px 0; }
 </style>
 </head>
 <body>
@@ -44,7 +43,6 @@ button:hover { opacity: 0.9; }
         <p>مدیریت لایسنس‌های مشتریان</p>
     </div>
 
-    <!-- صفحه ورود -->
     <div id="loginBox" class="login-box">
         <h2 style="text-align:center; color:#333;">🔐 ورود مدیر</h2>
         <label>رمز عبور:</label>
@@ -52,12 +50,8 @@ button:hover { opacity: 0.9; }
         <label>GitHub Token:</label>
         <input type="password" id="ghToken" placeholder="Personal Access Token">
         <button onclick="login()">ورود</button>
-        <p style="color:#999; font-size:12px; text-align:center; margin-top:15px;">
-            برای اضافه/حذف کد نیاز به Token دارید
-        </p>
     </div>
 
-    <!-- پنل اصلی -->
     <div id="mainPanel" class="hidden">
         <div class="panel">
             <div class="stats">
@@ -113,7 +107,7 @@ button:hover { opacity: 0.9; }
 <script>
 const GITHUB_USER = "navidsad1391-boop";
 const GITHUB_REPO = "ahkam-license";
-const ADMIN_PASSWORD = "1234"; // این رمز را عوض کن!
+const ADMIN_PASSWORD = "1234";
 
 let ghToken = "";
 let currentData = null;
@@ -124,7 +118,7 @@ function login() {
     const token = document.getElementById('ghToken').value;
     
     if (pass !== ADMIN_PASSWORD) {
-        alert("❌ رمز اشتباه است!");
+        alert("رمز اشتباه است");
         return;
     }
     
@@ -136,8 +130,12 @@ function login() {
 
 async function loadLicenses() {
     try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/licenses.json`, {
-            headers: ghToken ? { 'Authorization': `token ${ghToken}` } : {}
+        const cacheBuster = new Date().getTime();
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/licenses.json?t=${cacheBuster}`, {
+            headers: {
+                'Authorization': `token ${ghToken}`,
+                'Cache-Control': 'no-cache'
+            }
         });
         const data = await response.json();
         fileSha = data.sha;
@@ -148,6 +146,16 @@ async function loadLicenses() {
     }
 }
 
+function safeNumber(n) {
+    if (n === null || n === undefined || isNaN(n)) return 0;
+    return Number(n);
+}
+
+function safeText(t) {
+    if (t === null || t === undefined) return "---";
+    return String(t);
+}
+
 function displayLicenses() {
     const list = document.getElementById('licensesList');
     list.innerHTML = '';
@@ -156,23 +164,25 @@ function displayLicenses() {
     const today = new Date();
     
     currentData.licenses.forEach((lic, idx) => {
-        const expDate = new Date(lic.expires);
-        const isExpired = expDate < today && lic.expires !== "2099-12-31";
+        const expiresStr = safeText(lic.expires);
+        const expDate = new Date(expiresStr);
+        const isExpired = expDate < today && expiresStr !== "2099-12-31";
         
-        if (isExpired || !lic.active) expired++;
+        if (isExpired || lic.active === false) expired++;
         else active++;
         
         const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+        const price = safeNumber(lic.price);
         
         const card = document.createElement('div');
         card.className = 'license-card' + (isExpired ? ' expired' : '');
         card.innerHTML = `
-            <h4>${isExpired ? '❌' : '✅'} ${lic.customer}</h4>
-            <div class="code-box">${lic.code}</div>
-            <p>📱 ${lic.phone} | 🏙️ ${lic.city}</p>
-            <p>📅 تاریخ ساخت: ${lic.created} | ⏰ انقضا: ${lic.expires}</p>
-            <p>${isExpired ? '❌ منقضی شده' : `⏳ ${daysLeft} روز باقیمانده`} | 💰 ${lic.price.toLocaleString()} تومان</p>
-            <button class="btn-small btn-copy" onclick="copyCode('${lic.code}')">📋 کپی</button>
+            <h4>${isExpired ? '❌' : '✅'} ${safeText(lic.customer)}</h4>
+            <div class="code-box">${safeText(lic.code)}</div>
+            <p>📱 ${safeText(lic.phone)} | 🏙️ ${safeText(lic.city)}</p>
+            <p>📅 تاریخ ساخت: ${safeText(lic.created)} | ⏰ انقضا: ${expiresStr}</p>
+            <p>${isExpired ? '❌ منقضی شده' : (expiresStr === "2099-12-31" ? "♾️ نامحدود" : `⏳ ${daysLeft} روز باقیمانده`)} | 💰 ${price.toLocaleString()} تومان</p>
+            <button class="btn-small btn-copy" onclick="copyCode('${safeText(lic.code)}')">📋 کپی</button>
             <button class="btn-small btn-delete" onclick="deleteLicense(${idx})">❌ حذف</button>
         `;
         list.appendChild(card);
@@ -194,26 +204,23 @@ function generateCode() {
 
 async function createLicense() {
     if (!ghToken) {
-        alert("❌ برای ساخت کد به GitHub Token نیاز داری!");
+        alert("برای ساخت کد به GitHub Token نیاز داری");
         return;
     }
     
-    const name = document.getElementById('custName').value;
-    const phone = document.getElementById('custPhone').value;
-    const city = document.getElementById('custCity').value;
-    const duration = parseInt(document.getElementById('duration').value);
-    const price = parseInt(document.getElementById('price').value);
-    
-    if (!name || !phone) {
-        alert("❌ نام و شماره را وارد کن!");
-        return;
-    }
+    const name = document.getElementById('custName').value || "بدون نام";
+    const phone = document.getElementById('custPhone').value || "---";
+    const city = document.getElementById('custCity').value || "---";
+    const duration = parseInt(document.getElementById('duration').value) || 30;
+    const price = parseInt(document.getElementById('price').value) || 0;
     
     const code = generateCode();
     const today = new Date();
     const expires = new Date();
     if (duration >= 9999) {
         expires.setFullYear(2099);
+        expires.setMonth(11);
+        expires.setDate(31);
     } else {
         expires.setDate(today.getDate() + duration);
     }
@@ -245,16 +252,16 @@ async function createLicense() {
     document.getElementById('custPhone').value = '';
     document.getElementById('custCity').value = '';
     
-    displayLicenses();
+    setTimeout(loadLicenses, 1500);
 }
 
 async function deleteLicense(idx) {
     if (!confirm("مطمئنی می‌خوای این کد رو حذف کنی؟")) return;
-    if (!ghToken) { alert("Token نداری!"); return; }
+    if (!ghToken) { alert("Token نداری"); return; }
     
     currentData.licenses.splice(idx, 1);
     await saveToGithub();
-    displayLicenses();
+    setTimeout(loadLicenses, 1500);
 }
 
 async function saveToGithub() {
@@ -281,8 +288,9 @@ async function saveToGithub() {
 }
 
 function copyCode(code) {
-    navigator.clipboard.writeText(code);
-    alert("✅ کد کپی شد: " + code);
+    navigator.clipboard.writeText(code).then(() => {
+        alert("کد کپی شد: " + code);
+    });
 }
 </script>
 </body>
