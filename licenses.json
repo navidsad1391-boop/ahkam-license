@@ -32,6 +32,17 @@
       "duration_days": 9999,
       "active": true,
       "price": null
+    },
+    {
+      "code": "KAFI-FWBB-YQ48",
+      "customer": "0",
+      "phone": "5",
+      "city": "",
+      "created": "2026-08-06",
+      "expires": "2026-09-05",
+      "duration_days": 30,
+      "active": true,
+      "price": 300000
     }
   ]
 }
