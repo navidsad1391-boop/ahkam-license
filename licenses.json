@@ -1,3 +1,15 @@
 {
-  "licenses": []
+  "licenses": [
+    {
+      "code": "KAFI-ECDE-DNMC",
+      "customer": "تست",
+      "phone": "....",
+      "city": "00",
+      "created": "2026-08-06",
+      "expires": "2026-08-13",
+      "duration_days": 7,
+      "active": true,
+      "price": 300000
+    }
+  ]
 }
