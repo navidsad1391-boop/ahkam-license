@@ -43,6 +43,17 @@
       "duration_days": 30,
       "active": true,
       "price": 300000
+    },
+    {
+      "code": "KAFI-MFG2-N4PP",
+      "customer": "0",
+      "phone": "0",
+      "city": "",
+      "created": "2026-08-06",
+      "expires": "2026-08-13",
+      "duration_days": 7,
+      "active": true,
+      "price": 300000
     }
   ]
 }
