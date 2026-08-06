@@ -54,6 +54,17 @@
       "duration_days": 7,
       "active": true,
       "price": 300000
+    },
+    {
+      "code": "KAFI-DFS3-VYHY",
+      "customer": "3",
+      "phone": "5",
+      "city": "",
+      "created": "2026-08-06",
+      "expires": "2026-08-13",
+      "duration_days": 7,
+      "active": true,
+      "price": 300000
     }
   ]
 }
