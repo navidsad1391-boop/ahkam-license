@@ -21,6 +21,17 @@
       "duration_days": 9999,
       "active": true,
       "price": null
+    },
+    {
+      "code": "KAFI-S9RQ-VTD8",
+      "customer": "کافی نت رز",
+      "phone": "09138069769",
+      "city": "اصفهان",
+      "created": "2026-08-06",
+      "expires": "2099-08-06",
+      "duration_days": 9999,
+      "active": true,
+      "price": null
     }
   ]
 }
