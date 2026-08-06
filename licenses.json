@@ -1,16 +1,3 @@
 {
-  "licenses": [
-    {
-      "code": "TEST-1234-DEMO",
-      "customer": "کد تست",
-      "phone": "09000000000",
-      "city": "تست",
-      "created": "2024-12-05",
-      "expires": "2099-12-31",
-      "duration_days": 9999,
-      "active": true,
-      "price": 0,
-      "note": "کد تست برای امتحان اپ"
-    }
-  ]
+  "licenses": []
 }
