@@ -1,70 +1,15 @@
 {
   "licenses": [
     {
-      "code": "KAFI-ECDE-DNMC",
-      "customer": "تست",
-      "phone": "....",
-      "city": "00",
-      "created": "2026-08-06",
-      "expires": "2026-08-13",
-      "duration_days": 7,
-      "active": true,
-      "price": 300000
-    },
-    {
-      "code": "KAFI-89A5-HTZS",
-      "customer": "کافی نت رز",
-      "phone": "09138069769",
-      "city": "اصفهان",
-      "created": "2026-08-06",
-      "expires": "2099-08-06",
+      "code": "TEST-1234-DEMO",
+      "customer": "کد تست",
+      "phone": "09000000000",
+      "city": "تست",
+      "created": "2024-12-05",
+      "expires": "2099-12-31",
       "duration_days": 9999,
       "active": true,
-      "price": null
-    },
-    {
-      "code": "KAFI-S9RQ-VTD8",
-      "customer": "کافی نت رز",
-      "phone": "09138069769",
-      "city": "اصفهان",
-      "created": "2026-08-06",
-      "expires": "2099-08-06",
-      "duration_days": 9999,
-      "active": true,
-      "price": null
-    },
-    {
-      "code": "KAFI-FWBB-YQ48",
-      "customer": "0",
-      "phone": "5",
-      "city": "",
-      "created": "2026-08-06",
-      "expires": "2026-09-05",
-      "duration_days": 30,
-      "active": true,
-      "price": 300000
-    },
-    {
-      "code": "KAFI-MFG2-N4PP",
-      "customer": "0",
-      "phone": "0",
-      "city": "",
-      "created": "2026-08-06",
-      "expires": "2026-08-13",
-      "duration_days": 7,
-      "active": true,
-      "price": 300000
-    },
-    {
-      "code": "KAFI-DFS3-VYHY",
-      "customer": "3",
-      "phone": "5",
-      "city": "",
-      "created": "2026-08-06",
-      "expires": "2026-08-13",
-      "duration_days": 7,
-      "active": true,
-      "price": 300000
+      "price": 0
     }
   ]
 }
