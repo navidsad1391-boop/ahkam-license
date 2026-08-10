@@ -12,4 +12,14 @@
       "price": 0
     },
     {
-      
+          ,{
+      "code": "KAFI-NEW1-2024",
+      "customer": "اسم مشتری",
+      "phone": "09123456789",
+      "city": "تهران",
+      "created": "2024-12-05",
+      "expires": "2025-01-05",
+      "duration_days": 7,
+      "active": true,
+      "price": 300000
+    }
