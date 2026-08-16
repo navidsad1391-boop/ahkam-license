@@ -1,34 +1,9 @@
 {
   "licenses": [
     {
-      "code": "TEST-1234-DEMO",
-      "customer": "کد تست",
-      "phone": "09000000000",
-      "city": "تست",
-      "created": "2024-01-01",
-      "expires": "2099-12-31",
-      "duration_days": 9999,
-      "active": true,
-      "price": 0
-    },
-    {
-      "code": "KAFI-2024-VIP",
-      "customer": "کد ویژه",
-      "phone": "09123456789",
-      "city": "تهران",
-      "created": "2024-01-01",
-      "expires": "2099-12-31",
-      "duration_days": 9999,
-      "active": true,
-      "price": 1000000
-    }
-  ]
-}
-,
-    {
-      "code": "KAFI-C35H-NKG2",
-      "customer": "نوید ",
-      "phone": "091300000",
+      "code": "KAFI-BYZJ-VBLH",
+      "customer": "نوید۱",
+      "phone": "09135555555",
       "city": "اصفهان",
       "created": "2026-08-16",
       "expires": "2099-12-31",
@@ -36,3 +11,5 @@
       "active": true,
       "price": 300000
     }
+  ]
+}
