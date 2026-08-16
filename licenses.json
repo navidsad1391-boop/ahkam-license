@@ -5,21 +5,22 @@
       "customer": "کد تست",
       "phone": "09000000000",
       "city": "تست",
-      "created": "2024-12-05",
+      "created": "2024-01-01",
       "expires": "2099-12-31",
       "duration_days": 9999,
       "active": true,
       "price": 0
     },
     {
-          ,{
-      "code": "KAFI-NEW1-2024",
-      "customer": "اسم مشتری",
+      "code": "KAFI-2024-VIP",
+      "customer": "کد ویژه",
       "phone": "09123456789",
       "city": "تهران",
-      "created": "2024-12-05",
-      "expires": "2025-01-05",
-      "duration_days": 7,
+      "created": "2024-01-01",
+      "expires": "2099-12-31",
+      "duration_days": 9999,
       "active": true,
-      "price": 300000
+      "price": 1000000
     }
+  ]
+}
