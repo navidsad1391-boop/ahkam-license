@@ -3,295 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مدیریت ربات احکام تجارت</title>
+<title>پنل ربات احکام تجارت</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Tahoma, sans-serif; }
 body { background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; padding: 20px; }
-.container { max-width: 900px; margin: 0 auto; }
-.header { background: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.header h1 { color: #333; font-size: 24px; }
-.header p { color: #666; margin-top: 10px; }
-.login-box, .panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.hidden { display: none; }
-input, select { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
-input:focus, select:focus { outline: none; border-color: #667eea; }
+.container { max-width: 800px; margin: 0 auto; }
+.card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; }
+h1 { color: #333; text-align: center; margin-bottom: 10px; }
+h2 { color: #667eea; margin-bottom: 15px; }
+input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: monospace; }
 label { color: #555; font-weight: bold; display: block; margin-top: 10px; }
 button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; width: 100%; }
-button:hover { opacity: 0.9; }
-.btn-small { padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
-.btn-copy { background: #4caf50; }
-.btn-delete { background: #f44336; }
-.btn-edit { background: #ff9800; }
-.stats { display: flex; gap: 15px; margin: 20px 0; }
-.stat-box { flex: 1; background: #f5f5f5; padding: 15px; border-radius: 10px; text-align: center; }
-.stat-box h3 { color: #667eea; font-size: 28px; }
-.stat-box p { color: #666; margin-top: 5px; }
-.license-card { background: #f9f9f9; border-right: 5px solid #667eea; padding: 15px; margin: 10px 0; border-radius: 8px; }
-.license-card.expired { border-right-color: #f44336; opacity: 0.7; }
-.license-card h4 { color: #333; }
-.license-card p { color: #666; font-size: 13px; margin: 3px 0; }
-.code-box { background: #333; color: #4caf50; padding: 10px; border-radius: 5px; font-family: monospace; margin: 5px 0; font-size: 14px; }
-.result-box { background: #e8f5e9; border: 2px solid #4caf50; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center; }
-.result-box h3 { color: #2e7d32; }
-.error { background: #ffebee; color: #c62828; padding: 10px; border-radius: 8px; margin: 10px 0; }
+.btn-copy { background: #4caf50; padding: 8px 15px; font-size: 13px; }
+.btn-refresh { background: #ff9800; padding: 8px 15px; font-size: 13px; margin: 0 5px; }
+.code-box { background: #333; color: #4caf50; padding: 12px; border-radius: 8px; font-family: monospace; margin: 8px 0; font-size: 15px; text-align: center; letter-spacing: 2px; }
+.result { background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 10px; margin-top: 15px; }
+.license-item { background: #f5f5f5; padding: 12px; margin: 8px 0; border-radius: 8px; border-right: 4px solid #667eea; }
+.instructions { background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+.step { background: white; padding: 10px; margin: 5px 0; border-radius: 5px; }
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1>🤖 پنل مدیریت ربات احکام تجارت</h1>
-        <p>مدیریت لایسنس‌های مشتریان</p>
-    </div>
 
-    <div id="loginBox" class="login-box">
-        <h2 style="text-align:center; color:#333;">🔐 ورود مدیر</h2>
-        <label>رمز عبور:</label>
-        <input type="password" id="adminPass" placeholder="رمز مدیر را وارد کنید">
-        <label>GitHub Token:</label>
-        <input type="password" id="ghToken" placeholder="Personal Access Token">
-        <button onclick="login()">ورود</button>
-    </div>
+<div class="card">
+  <h1>🤖 پنل ربات احکام تجارت</h1>
+  <p style="text-align:center;color:#666;">ساخت و مدیریت کدهای فعال‌سازی</p>
+</div>
 
-    <div id="mainPanel" class="hidden">
-        <div class="panel">
-            <div class="stats">
-                <div class="stat-box">
-                    <h3 id="totalCodes">0</h3>
-                    <p>کل کدها</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="activeCodes" style="color:#4caf50;">0</h3>
-                    <p>فعال</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="expiredCodes" style="color:#f44336;">0</h3>
-                    <p>منقضی</p>
-                </div>
-            </div>
+<div class="card">
+  <h2>✨ ساخت کد جدید</h2>
+  
+  <label>نام مشتری:</label>
+  <input type="text" id="custName" placeholder="مثلا: احمد رضایی" style="font-family: Tahoma;">
+  
+  <label>شماره تماس:</label>
+  <input type="text" id="custPhone" placeholder="09123456789">
+  
+  <label>شهر:</label>
+  <input type="text" id="custCity" placeholder="مثلا: تهران" style="font-family: Tahoma;">
+  
+  <label>مدت زمان:</label>
+  <select id="duration" style="font-family: Tahoma;">
+    <option value="7">7 روز - 150,000 تومان</option>
+    <option value="30" selected>30 روز - 300,000 تومان</option>
+    <option value="90">90 روز - 700,000 تومان</option>
+    <option value="365">1 سال - 2,000,000 تومان</option>
+    <option value="9999">نامحدود - 5,000,000 تومان</option>
+  </select>
+  
+  <label>قیمت (تومان):</label>
+  <input type="number" id="price" value="300000">
+  
+  <button onclick="generateCode()">🔑 ساخت کد + کپی JSON</button>
+  
+  <div id="result"></div>
+</div>
 
-            <h2 style="color:#333; margin:20px 0 10px;">➕ ساخت کد جدید</h2>
-            <label>نام مشتری:</label>
-            <input type="text" id="custName" placeholder="مثلا: کافی‌نت اصفهان">
-            
-            <label>شماره تماس:</label>
-            <input type="text" id="custPhone" placeholder="09xxxxxxxxx">
-            
-            <label>شهر:</label>
-            <input type="text" id="custCity" placeholder="مثلا: اصفهان">
-            
-            <label>مدت زمان:</label>
-            <select id="duration">
-                <option value="7">۷ روز - ۱۵۰,۰۰۰ تومان</option>
-                <option value="30" selected>۳۰ روز - ۳۰۰,۰۰۰ تومان</option>
-                <option value="90">۹۰ روز - ۷۰۰,۰۰۰ تومان</option>
-                <option value="365">۱ سال - ۲,۰۰۰,۰۰۰ تومان</option>
-                <option value="9999">نامحدود - ۵,۰۰۰,۰۰۰ تومان</option>
-            </select>
-            
-            <label>قیمت (تومان):</label>
-            <input type="number" id="price" value="300000">
-            
-            <button onclick="createLicense()">🔑 ساخت کد جدید</button>
-            
-            <div id="resultArea"></div>
-        </div>
+<div class="card">
+  <h2>📋 نحوه استفاده</h2>
+  <div class="instructions">
+    <div class="step"><b>1.</b> فرم بالا را پر کن</div>
+    <div class="step"><b>2.</b> دکمه "ساخت کد" را بزن</div>
+    <div class="step"><b>3.</b> کد JSON را کپی کن</div>
+    <div class="step"><b>4.</b> روی دکمه "ویرایش licenses.json" بزن</div>
+    <div class="step"><b>5.</b> قبل از <code>]</code> آخر، کاما بذار و JSON را paste کن</div>
+    <div class="step"><b>6.</b> Commit بزن</div>
+    <div class="step"><b>7.</b> کد را به مشتری بده!</div>
+  </div>
+  
+  <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="display:block;text-decoration:none;">
+    <button>📝 ویرایش licenses.json در گیت‌هاب</button>
+  </a>
+  
+  <a href="https://raw.githubusercontent.com/navidsad1391-boop/ahkam-license/main/licenses.json" target="_blank" style="display:block;text-decoration:none;margin-top:10px;">
+    <button style="background: #ff9800;">👁️ مشاهده کدهای فعلی</button>
+  </a>
+</div>
 
-        <div class="panel" style="margin-top:20px;">
-            <h2 style="color:#333;">📋 لیست کدها</h2>
-            <button onclick="loadLicenses()" style="width:auto; padding:8px 15px; font-size:13px;">🔄 بروزرسانی</button>
-            <div id="licensesList"></div>
-        </div>
-    </div>
+<div class="card">
+  <h2>📊 کدهای موجود</h2>
+  <button onclick="loadLicenses()" class="btn-refresh">🔄 بارگذاری</button>
+  <div id="licensesList"></div>
+</div>
+
 </div>
 
 <script>
-const GITHUB_USER = "navidsad1391-boop";
-const GITHUB_REPO = "ahkam-license";
-const ADMIN_PASSWORD = "1234";
-
-let ghToken = "";
-let currentData = null;
-let fileSha = "";
-
-function login() {
-    const pass = document.getElementById('adminPass').value;
-    const token = document.getElementById('ghToken').value;
-    
-    if (pass !== ADMIN_PASSWORD) {
-        alert("رمز اشتباه است");
-        return;
-    }
-    
-    ghToken = token;
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('mainPanel').classList.remove('hidden');
-    loadLicenses();
-}
-
-async function loadLicenses() {
-    try {
-        const cacheBuster = new Date().getTime();
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/licenses.json?t=${cacheBuster}`, {
-            headers: {
-                'Authorization': `token ${ghToken}`,
-                'Cache-Control': 'no-cache'
-            }
-        });
-        const data = await response.json();
-        fileSha = data.sha;
-        currentData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        displayLicenses();
-    } catch (e) {
-        alert("خطا در دریافت اطلاعات: " + e.message);
-    }
-}
-
-function safeNumber(n) {
-    if (n === null || n === undefined || isNaN(n)) return 0;
-    return Number(n);
-}
-
-function safeText(t) {
-    if (t === null || t === undefined) return "---";
-    return String(t);
-}
-
-function displayLicenses() {
-    const list = document.getElementById('licensesList');
-    list.innerHTML = '';
-    
-    let active = 0, expired = 0;
-    const today = new Date();
-    
-    currentData.licenses.forEach((lic, idx) => {
-        const expiresStr = safeText(lic.expires);
-        const expDate = new Date(expiresStr);
-        const isExpired = expDate < today && expiresStr !== "2099-12-31";
-        
-        if (isExpired || lic.active === false) expired++;
-        else active++;
-        
-        const daysLeft = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
-        const price = safeNumber(lic.price);
-        
-        const card = document.createElement('div');
-        card.className = 'license-card' + (isExpired ? ' expired' : '');
-        card.innerHTML = `
-            <h4>${isExpired ? '❌' : '✅'} ${safeText(lic.customer)}</h4>
-            <div class="code-box">${safeText(lic.code)}</div>
-            <p>📱 ${safeText(lic.phone)} | 🏙️ ${safeText(lic.city)}</p>
-            <p>📅 تاریخ ساخت: ${safeText(lic.created)} | ⏰ انقضا: ${expiresStr}</p>
-            <p>${isExpired ? '❌ منقضی شده' : (expiresStr === "2099-12-31" ? "♾️ نامحدود" : `⏳ ${daysLeft} روز باقیمانده`)} | 💰 ${price.toLocaleString()} تومان</p>
-            <button class="btn-small btn-copy" onclick="copyCode('${safeText(lic.code)}')">📋 کپی</button>
-            <button class="btn-small btn-delete" onclick="deleteLicense(${idx})">❌ حذف</button>
-        `;
-        list.appendChild(card);
-    });
-    
-    document.getElementById('totalCodes').innerText = currentData.licenses.length;
-    document.getElementById('activeCodes').innerText = active;
-    document.getElementById('expiredCodes').innerText = expired;
-}
-
 function generateCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code = 'KAFI-';
-    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    code += '-';
-    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    return code;
-}
-
-async function createLicense() {
-    if (!ghToken) {
-        alert("برای ساخت کد به GitHub Token نیاز داری");
-        return;
-    }
-    
     const name = document.getElementById('custName').value || "بدون نام";
     const phone = document.getElementById('custPhone').value || "---";
     const city = document.getElementById('custCity').value || "---";
     const duration = parseInt(document.getElementById('duration').value) || 30;
     const price = parseInt(document.getElementById('price').value) || 0;
     
-    const code = generateCode();
+    // ساخت کد یکتا
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'KAFI-';
+    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += '-';
+    for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+    
+    // تاریخ
     const today = new Date();
-    const expires = new Date();
+    const created = today.toISOString().split('T')[0];
+    
+    let expires;
     if (duration >= 9999) {
-        expires.setFullYear(2099);
-        expires.setMonth(11);
-        expires.setDate(31);
+        expires = "2099-12-31";
     } else {
-        expires.setDate(today.getDate() + duration);
+        const expDate = new Date();
+        expDate.setDate(today.getDate() + duration);
+        expires = expDate.toISOString().split('T')[0];
     }
     
-    const newLic = {
-        code: code,
-        customer: name,
-        phone: phone,
-        city: city,
-        created: today.toISOString().split('T')[0],
-        expires: expires.toISOString().split('T')[0],
-        duration_days: duration,
-        active: true,
-        price: price
-    };
+    // ساخت JSON
+    const jsonEntry = `,
+    {
+      "code": "${code}",
+      "customer": "${name}",
+      "phone": "${phone}",
+      "city": "${city}",
+      "created": "${created}",
+      "expires": "${expires}",
+      "duration_days": ${duration},
+      "active": true,
+      "price": ${price}
+    }`;
     
-    currentData.licenses.push(newLic);
-    await saveToGithub();
-    
-    document.getElementById('resultArea').innerHTML = `
-        <div class="result-box">
-            <h3>✅ کد ساخته شد!</h3>
-            <div class="code-box" style="font-size:20px;">${code}</div>
-            <button onclick="copyCode('${code}')">📋 کپی کد</button>
+    document.getElementById('result').innerHTML = `
+        <div class="result">
+            <h3 style="color:#2e7d32;margin-bottom:10px;">✅ کد ساخته شد!</h3>
+            <div class="code-box">${code}</div>
+            <button onclick="copyText('${code}')" class="btn-copy">📋 کپی کد</button>
+            
+            <h4 style="margin-top:20px;color:#333;">📝 JSON آماده برای paste در GitHub:</h4>
+            <textarea id="jsonOutput" rows="12" readonly style="direction:ltr;text-align:left;">${jsonEntry}</textarea>
+            <button onclick="copyJSON()" class="btn-copy">📋 کپی JSON</button>
+            
+            <div style="background:#fff3cd;padding:15px;margin-top:15px;border-radius:8px;">
+                <b>مراحل بعدی:</b><br>
+                1. دکمه "کپی JSON" را بزن<br>
+                2. روی "ویرایش licenses.json" کلیک کن<br>
+                3. قبل از <code>]</code> آخر، JSON را paste کن<br>
+                4. Commit changes بزن<br>
+                5. کد <b>${code}</b> را به مشتری بده
+            </div>
         </div>
     `;
-    
-    document.getElementById('custName').value = '';
-    document.getElementById('custPhone').value = '';
-    document.getElementById('custCity').value = '';
-    
-    setTimeout(loadLicenses, 1500);
 }
 
-async function deleteLicense(idx) {
-    if (!confirm("مطمئنی می‌خوای این کد رو حذف کنی؟")) return;
-    if (!ghToken) { alert("Token نداری"); return; }
-    
-    currentData.licenses.splice(idx, 1);
-    await saveToGithub();
-    setTimeout(loadLicenses, 1500);
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("✅ کد کپی شد: " + text);
+    });
 }
 
-async function saveToGithub() {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
+function copyJSON() {
+    const textarea = document.getElementById('jsonOutput');
+    textarea.select();
+    document.execCommand('copy');
+    alert("✅ JSON کپی شد! حالا در GitHub paste کن");
+}
+
+async function loadLicenses() {
+    const listDiv = document.getElementById('licensesList');
+    listDiv.innerHTML = '<p style="text-align:center;color:#999;">در حال بارگذاری...</p>';
     
     try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/licenses.json`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${ghToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: 'Update licenses',
-                content: content,
-                sha: fileSha
-            })
-        });
+        const url = 'https://raw.githubusercontent.com/navidsad1391-boop/ahkam-license/main/licenses.json?t=' + Date.now();
+        const response = await fetch(url);
         const data = await response.json();
-        fileSha = data.content.sha;
+        
+        listDiv.innerHTML = '';
+        
+        if (data.licenses && data.licenses.length > 0) {
+            data.licenses.forEach(lic => {
+                const item = document.createElement('div');
+                item.className = 'license-item';
+                item.innerHTML = `
+                    <div class="code-box" style="font-size:14px;">${lic.code}</div>
+                    <p><b>مشتری:</b> ${lic.customer || '---'}</p>
+                    <p><b>تلفن:</b> ${lic.phone || '---'} | <b>شهر:</b> ${lic.city || '---'}</p>
+                    <p><b>ساخت:</b> ${lic.created} | <b>انقضا:</b> ${lic.expires}</p>
+                    <p><b>وضعیت:</b> ${lic.active ? '✅ فعال' : '❌ غیرفعال'} | <b>قیمت:</b> ${lic.price ? lic.price.toLocaleString() : 0} تومان</p>
+                    <button onclick="copyText('${lic.code}')" class="btn-copy">📋 کپی کد</button>
+                `;
+                listDiv.appendChild(item);
+            });
+        } else {
+            listDiv.innerHTML = '<p style="text-align:center;color:#999;">هیچ کدی موجود نیست</p>';
+        }
     } catch (e) {
-        alert("خطا در ذخیره: " + e.message);
+        listDiv.innerHTML = `<p style="color:red;">خطا: ${e.message}</p>`;
     }
 }
 
-function copyCode(code) {
-    navigator.clipboard.writeText(code).then(() => {
-        alert("کد کپی شد: " + code);
-    });
-}
+// بارگذاری خودکار
+window.addEventListener('load', loadLicenses);
 </script>
+
 </body>
 </html>
