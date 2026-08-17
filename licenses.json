@@ -10,6 +10,17 @@
       "duration_days": 9999,
       "active": true,
       "price": 300000
+    },
+    {
+      "code": "KAFI-F84F-ZDVK",
+      "customer": "بدون نام",
+      "phone": "---",
+      "city": "---",
+      "created": "2026-08-17",
+      "expires": "2026-09-16",
+      "duration_days": 30,
+      "active": true,
+      "price": 400000
     }
   ]
 }
