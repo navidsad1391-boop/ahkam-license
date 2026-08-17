@@ -10,17 +10,17 @@
       "duration_days": 9999,
       "active": true,
       "price": 300000
-    },
+    }
     {
-      "code": "KAFI-F84F-ZDVK",
-      "customer": "بدون نام",
-      "phone": "---",
-      "city": "---",
+      "code": "KAFI-F6EU-SJLN",
+      "customer": "ایمان طاهری",
+      "phone": "09138069769",
+      "city": "اصفهان",
       "created": "2026-08-17",
       "expires": "2026-09-16",
       "duration_days": 30,
       "active": true,
-      "price": 400000
+      "price": 300000
     }
   ]
 }
