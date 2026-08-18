@@ -10,6 +10,18 @@
       "duration_days": 7,
       "active": true,
       "price": 300000
+    },
+    {
+      "code": "KAFI-2NVM-H3Z2",
+      "customer": "ایمان طاهری",
+      "phone": "09138069769",
+      "city": "اصفهان",
+      "created": "2026-08-18",
+      "expires": "2026-09-17",
+      "duration_days": 30,
+      "active": true,
+      "price": 400000,
+      "activated_at": ""
     }
   ]
 }
