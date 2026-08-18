@@ -1,17 +1,6 @@
 {
   "licenses": [
     {
-      "code": "KAFI-BYZJ-VBLH",
-      "customer": "نوید۱",
-      "phone": "09135555555",
-      "city": "اصفهان",
-      "created": "2026-08-16",
-      "expires": "2099-12-31",
-      "duration_days": 9999,
-      "active": true,
-      "price": 300000
-    },
-    {
       "code": "KAFI-F6EU-SJLN",
       "customer": "ایمان طاهری",
       "phone": "09138069769",
