@@ -18,6 +18,7 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
 .btn-copy { background: #4caf50; padding: 8px 15px; font-size: 13px; width: auto; }
 .btn-delete { background: #f44336; padding: 8px 15px; font-size: 13px; width: auto; }
 .btn-reset { background: #ff9800; padding: 8px 15px; font-size: 13px; width: auto; }
+.btn-lock { background: #9c27b0; padding: 8px 15px; font-size: 13px; width: auto; }
 .btn-github { background: #333; }
 .btn-refresh { background: #2196f3; padding: 8px 15px; font-size: 13px; width: auto; }
 .code-box { background: #2d2d2d; color: #4caf50; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; margin: 8px 0; word-break: break-all; }
@@ -91,11 +92,11 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
       </div>
       <div class="stat">
         <h3 id="activeCount" style="color:#4caf50;">0</h3>
-        <p>فعال (استفاده نشده)</p>
+        <p>فعال</p>
       </div>
       <div class="stat">
         <h3 id="lockedCount" style="color:#ff9800;">0</h3>
-        <p>قفل شده (استفاده شده)</p>
+        <p>قفل شده</p>
       </div>
       <div class="stat">
         <h3 id="expiredCount" style="color:#f44336;">0</h3>
@@ -126,13 +127,13 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
 <div class="card">
   <div class="info-box">
     <b>📌 راهنما:</b><br>
-    <b>➕ افزودن:</b> کد جدید بساز و در GitHub paste کن<br>
-    <b>📋 مدیریت:</b> کدها را ببین، ریست کن یا حذف کن<br>
-    <b>🔄 ریست:</b> کدی که مشتری استفاده کرده را دوباره فعال کن (اگر گوشی عوض کرد)<br>
+    <b>➕ افزودن:</b> کد جدید بساز<br>
+    <b>🔒 قفل کن:</b> کد فعال را دستی قفل کن (استفاده شده اعلام کن)<br>
+    <b>🔓 ریست:</b> کد قفل شده را دوباره فعال کن (برای گوشی جدید مشتری)<br>
     <b>🗑️ حذف:</b> کد را کاملاً حذف کن<br><br>
     <b>وضعیت‌ها:</b><br>
     <span class="status-badge badge-active">✅ فعال</span> - آماده استفاده<br>
-    <span class="status-badge badge-locked">🔒 قفل شده</span> - مشتری استفاده کرده<br>
+    <span class="status-badge badge-locked">🔒 قفل شده</span> - استفاده شده<br>
     <span class="status-badge badge-expired">❌ منقضی</span> - تاریخ گذشته
   </div>
   <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;">
@@ -236,7 +237,7 @@ async function generateCode() {
             <b>🎯 مراحل:</b><br>
             1. دکمه "کپی JSON" را بزن<br>
             2. روی "GitHub" کلیک کن<br>
-            3. همه محتوا را پاک کن (Ctrl+A → Delete)<br>
+            3. همه محتوا را پاک کن<br>
             4. Paste کن<br>
             5. Commit changes<br>
             6. کد <b>${code}</b> را به مشتری بده!
@@ -295,14 +296,18 @@ function displayLicenses() {
             active++;
         }
         
-        const activatedInfo = lic.activated_at ? `<br>🔓 فعال شده: ${lic.activated_at}` : '';
+        const activatedInfo = lic.activated_at ? `<br>🔓 قفل شده: ${lic.activated_at}` : '';
         
         let actionButtons = `
             <button onclick="copyText('${lic.code}')" class="btn-copy">📋 کپی کد</button>
         `;
         
+        if (isActive && !isExpired) {
+            actionButtons += `<button onclick="lockLicense(${index})" class="btn-lock">🔒 قفل کن</button>`;
+        }
+        
         if (isLocked || isExpired) {
-            actionButtons += `<button onclick="resetLicense(${index})" class="btn-reset">🔄 ریست</button>`;
+            actionButtons += `<button onclick="resetLicense(${index})" class="btn-reset">🔓 ریست</button>`;
         }
         
         actionButtons += `<button onclick="deleteLicense(${index})" class="btn-delete">🗑️ حذف</button>`;
@@ -335,6 +340,32 @@ function displayLicenses() {
     document.getElementById('totalRevenue').innerText = totalRevenue.toLocaleString();
 }
 
+function lockLicense(index) {
+    const lic = currentLicenses[index];
+    if (!confirm(`🔒 آیا مطمئنی می‌خواهی این کد را قفل کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nبعد از قفل، مشتری نمی‌تواند از این کد استفاده کند.`)) {
+        return;
+    }
+    
+    currentLicenses[index].active = false;
+    currentLicenses[index].activated_at = new Date().toLocaleString('fa-IR');
+    
+    showJsonResult('🔒 کد قفل شد!', 'کد به عنوان استفاده شده علامت زده شد. حالا در GitHub paste کن:');
+    displayLicenses();
+}
+
+function resetLicense(index) {
+    const lic = currentLicenses[index];
+    if (!confirm(`🔓 آیا می‌خواهی این کد را ریست کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nبعد از ریست، کد دوباره فعال می‌شود.`)) {
+        return;
+    }
+    
+    currentLicenses[index].active = true;
+    currentLicenses[index].activated_at = "";
+    
+    showJsonResult('🔓 کد ریست شد!', 'کد دوباره فعال شد. حالا در GitHub paste کن:');
+    displayLicenses();
+}
+
 function deleteLicense(index) {
     const lic = currentLicenses[index];
     if (!confirm(`❗ آیا مطمئنی می‌خواهی این کد را حذف کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nاین عمل قابل بازگشت نیست!`)) {
@@ -343,19 +374,6 @@ function deleteLicense(index) {
     
     currentLicenses.splice(index, 1);
     showJsonResult('🗑️ کد حذف شد!', 'کد از لیست حذف شد. حالا در GitHub paste کن:');
-    displayLicenses();
-}
-
-function resetLicense(index) {
-    const lic = currentLicenses[index];
-    if (!confirm(`🔄 آیا می‌خواهی این کد را ریست کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nبعد از ریست، مشتری می‌تواند دوباره روی گوشی جدید فعال کند.`)) {
-        return;
-    }
-    
-    currentLicenses[index].active = true;
-    currentLicenses[index].activated_at = "";
-    
-    showJsonResult('🔄 کد ریست شد!', 'کد دوباره فعال شد. حالا در GitHub paste کن:');
     displayLicenses();
 }
 
@@ -380,12 +398,14 @@ function showJsonResult(title, message) {
             <b>🎯 برای تأیید تغییرات:</b><br>
             1. دکمه "کپی JSON" را بزن<br>
             2. روی "GitHub" کلیک کن<br>
-            3. همه محتوا را پاک کن<br>
+            3. همه محتوا را پاک کن (Ctrl+A → Delete)<br>
             4. Paste کن<br>
             5. Commit changes بزن<br>
             ⚠️ تا Commit نکنی، تغییرات اعمال نمی‌شود!
         </div>
     `;
+    
+    document.getElementById('deleteResult').scrollIntoView({behavior: 'smooth'});
 }
 
 async function loadJSON() {
