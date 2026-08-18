@@ -12,22 +12,34 @@ body { background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh;
 h1 { color: #333; text-align: center; margin-bottom: 10px; font-size: 22px; }
 h2 { color: #667eea; margin-bottom: 15px; font-size: 18px; }
 input, select { width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: Tahoma; }
-textarea { width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; direction: ltr; text-align: left; }
+textarea { width: 100%; padding: 10px; margin: 6px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 12px; font-family: monospace; direction: ltr; text-align: left; min-height: 200px; }
 label { color: #555; font-weight: bold; display: block; margin-top: 10px; font-size: 13px; }
 button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold; margin-top: 10px; width: 100%; }
-.btn-copy { background: #4caf50; }
-.btn-refresh { background: #ff9800; }
+.btn-copy { background: #4caf50; padding: 8px 15px; font-size: 13px; width: auto; }
+.btn-delete { background: #f44336; padding: 8px 15px; font-size: 13px; width: auto; }
+.btn-reset { background: #ff9800; padding: 8px 15px; font-size: 13px; width: auto; }
 .btn-github { background: #333; }
-.code-box { background: #2d2d2d; color: #4caf50; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 18px; text-align: center; letter-spacing: 2px; margin: 10px 0; word-break: break-all; }
-.count-list { list-style: none; padding: 0; }
-.count-item { background: #f5f5f5; padding: 12px; margin: 6px 0; border-radius: 8px; border-right: 4px solid #667eea; font-size: 13px; }
-.info-box { background: #fff3cd; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
-.success-box { background: #d4edda; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px; color: #155724; }
-.tab-container { display: flex; gap: 5px; margin-bottom: 15px; }
-.tab { flex: 1; padding: 10px; background: #ddd; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.btn-refresh { background: #2196f3; padding: 8px 15px; font-size: 13px; width: auto; }
+.code-box { background: #2d2d2d; color: #4caf50; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; margin: 8px 0; word-break: break-all; }
+.license-item { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 10px; border-right: 5px solid #4caf50; }
+.license-item.locked { border-right-color: #ff9800; background: #fff3e0; }
+.license-item.expired { border-right-color: #f44336; background: #ffebee; opacity: 0.8; }
+.info-box { background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; font-size: 13px; line-height: 1.6; }
+.success-box { background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0; color: #155724; }
+.button-group { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+.stats { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
+.stat { flex: 1; min-width: 100px; background: #f5f5f5; padding: 15px; border-radius: 10px; text-align: center; }
+.stat h3 { font-size: 24px; color: #667eea; }
+.stat p { font-size: 11px; color: #666; margin-top: 5px; }
+.tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+.tab { flex: 1; padding: 10px; background: #ddd; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; color: #333; }
 .tab.active { background: #667eea; color: white; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
+.status-badge { padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+.badge-active { background: #4caf50; color: white; }
+.badge-locked { background: #ff9800; color: white; }
+.badge-expired { background: #f44336; color: white; }
 </style>
 </head>
 <body>
@@ -35,27 +47,24 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
 
 <div class="card">
   <h1>🤖 پنل ربات احکام تجارت</h1>
-  <p style="text-align:center;color:#666;font-size:13px;">ساخت کد فعال‌سازی</p>
+  <p style="text-align:center;color:#666;font-size:13px;">مدیریت کدهای فعال‌سازی</p>
 </div>
 
 <div class="card">
-  <div class="tab-container">
-    <button class="tab active" onclick="showTab('add')">➕ افزودن کد</button>
-    <button class="tab" onclick="showTab('list')">📋 لیست کدها</button>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('add', event)">➕ افزودن</button>
+    <button class="tab" onclick="showTab('list', event)">📋 مدیریت</button>
+    <button class="tab" onclick="showTab('json', event)">📝 JSON</button>
   </div>
-  
+
   <div id="tab-add" class="tab-content active">
     <h2>ساخت کد جدید</h2>
-    
     <label>نام مشتری:</label>
     <input type="text" id="custName" placeholder="مثلا: احمد رضایی">
-    
     <label>شماره تماس:</label>
     <input type="text" id="custPhone" placeholder="09123456789">
-    
     <label>شهر:</label>
     <input type="text" id="custCity" placeholder="مثلا: تهران">
-    
     <label>مدت زمان:</label>
     <select id="duration">
       <option value="7">7 روز</option>
@@ -65,39 +74,69 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
       <option value="365">1 سال</option>
       <option value="9999">نامحدود</option>
     </select>
-    
     <label>قیمت (تومان):</label>
     <input type="number" id="price" value="300000">
-    
     <button onclick="generateCode()">🔑 ساخت کد جدید</button>
-    
     <div id="result"></div>
   </div>
-  
+
   <div id="tab-list" class="tab-content">
-    <h2>کدهای موجود</h2>
+    <h2>مدیریت کدها</h2>
     <button onclick="loadLicenses()" class="btn-refresh">🔄 بارگذاری</button>
-    <div id="licensesList"></div>
     
-    <button onclick="showFullJSON()" style="margin-top:15px;">📝 نمایش JSON کامل</button>
-    <div id="fullJsonDiv"></div>
+    <div class="stats" id="stats" style="display:none;">
+      <div class="stat">
+        <h3 id="totalCount">0</h3>
+        <p>کل</p>
+      </div>
+      <div class="stat">
+        <h3 id="activeCount" style="color:#4caf50;">0</h3>
+        <p>فعال (استفاده نشده)</p>
+      </div>
+      <div class="stat">
+        <h3 id="lockedCount" style="color:#ff9800;">0</h3>
+        <p>قفل شده (استفاده شده)</p>
+      </div>
+      <div class="stat">
+        <h3 id="expiredCount" style="color:#f44336;">0</h3>
+        <p>منقضی</p>
+      </div>
+      <div class="stat">
+        <h3 id="totalRevenue" style="color:#667eea;font-size:18px;">0</h3>
+        <p>درآمد (تومان)</p>
+      </div>
+    </div>
+    
+    <div id="licensesList"></div>
+    <div id="deleteResult"></div>
+  </div>
+
+  <div id="tab-json" class="tab-content">
+    <h2>JSON کامل فایل</h2>
+    <button onclick="loadJSON()" class="btn-refresh">🔄 بارگذاری</button>
+    <label>محتوای فایل licenses.json:</label>
+    <textarea id="jsonView" readonly></textarea>
+    <button onclick="copyJSON()" class="btn-copy">📋 کپی JSON</button>
+    <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;">
+      <button class="btn-github">📝 ویرایش در GitHub</button>
+    </a>
   </div>
 </div>
 
 <div class="card">
-  <h2>🚀 اضافه کردن به GitHub</h2>
   <div class="info-box">
-    <b>روش کار:</b><br>
-    ۱. کد را بساز<br>
-    ۲. دکمه "کپی JSON کامل" را بزن<br>
-    ۳. روی دکمه GitHub بزن<br>
-    ۴. همه محتوا را پاک کن<br>
-    ۵. Paste کن<br>
-    ۶. Commit changes بزن
+    <b>📌 راهنما:</b><br>
+    <b>➕ افزودن:</b> کد جدید بساز و در GitHub paste کن<br>
+    <b>📋 مدیریت:</b> کدها را ببین، ریست کن یا حذف کن<br>
+    <b>🔄 ریست:</b> کدی که مشتری استفاده کرده را دوباره فعال کن (اگر گوشی عوض کرد)<br>
+    <b>🗑️ حذف:</b> کد را کاملاً حذف کن<br><br>
+    <b>وضعیت‌ها:</b><br>
+    <span class="status-badge badge-active">✅ فعال</span> - آماده استفاده<br>
+    <span class="status-badge badge-locked">🔒 قفل شده</span> - مشتری استفاده کرده<br>
+    <span class="status-badge badge-expired">❌ منقضی</span> - تاریخ گذشته
   </div>
-  
   <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;">
-    <button class="btn-github">📝 باز کردن GitHub برای ویرایش</button>
+    <button class="btn-github">📝 باز کردن licenses.json در GitHub</button>
   </a>
 </div>
 
@@ -106,12 +145,18 @@ button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; pa
 <script>
 let currentLicenses = [];
 
-function showTab(tab) {
+function showTab(tab, event) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
-    if (tab === 'list') loadLicenses();
+    
+    if (tab === 'list' || tab === 'json') {
+        loadCurrentLicenses().then(() => {
+            if (tab === 'list') displayLicenses();
+            if (tab === 'json') displayJSON();
+        });
+    }
 }
 
 async function loadCurrentLicenses() {
@@ -134,7 +179,6 @@ async function generateCode() {
     const duration = parseInt(document.getElementById('duration').value) || 30;
     const price = parseInt(document.getElementById('price').value) || 0;
     
-    // ساخت کد
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = 'KAFI-';
     for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -153,11 +197,9 @@ async function generateCode() {
         expires = expDate.toISOString().split('T')[0];
     }
     
-    // بارگذاری کدهای فعلی
-    document.getElementById('result').innerHTML = '<p style="text-align:center;padding:10px;">در حال بارگذاری کدهای فعلی...</p>';
+    document.getElementById('result').innerHTML = '<p style="text-align:center;padding:10px;">در حال بارگذاری...</p>';
     await loadCurrentLicenses();
     
-    // اضافه کردن کد جدید
     const newLicense = {
         code: code,
         customer: name,
@@ -167,56 +209,200 @@ async function generateCode() {
         expires: expires,
         duration_days: duration,
         active: true,
-        price: price
+        price: price,
+        activated_at: ""
     };
     
     currentLicenses.push(newLicense);
-    
-    // ساخت JSON کامل
-    const fullJson = {
-        licenses: currentLicenses
-    };
-    
+    const fullJson = { licenses: currentLicenses };
     const jsonString = JSON.stringify(fullJson, null, 2);
     
-    // نمایش نتیجه
     document.getElementById('result').innerHTML = `
         <div class="success-box">
             <h3 style="margin-bottom:10px;">✅ کد ساخته شد!</h3>
         </div>
-        
         <label>کد فعال‌سازی مشتری:</label>
         <div class="code-box">${code}</div>
         <button onclick="copyText('${code}')" class="btn-copy">📋 کپی کد</button>
-        
-        <label style="margin-top:20px;">JSON کامل (برای paste در GitHub):</label>
-        <textarea id="jsonOutput" rows="15">${jsonString}</textarea>
-        <button onclick="copyJSON()" class="btn-copy">📋 کپی JSON کامل</button>
-        
-        <div class="info-box" style="margin-top:15px;">
-            <b>🎯 مراحل بعدی:</b><br>
-            ۱. دکمه <b>"کپی JSON کامل"</b> را بزن<br>
-            ۲. روی دکمه <b>"باز کردن GitHub"</b> بزن<br>
-            ۳. در GitHub، همه محتوا را پاک کن (Ctrl+A بعد Delete)<br>
-            ۴. JSON را Paste کن<br>
-            ۵. پایین صفحه: <b>Commit changes</b><br>
-            ۶. کد <b>${code}</b> را به مشتری بده!
+        <label style="margin-top:20px;">JSON کامل (paste در GitHub):</label>
+        <textarea id="jsonOutput" readonly>${jsonString}</textarea>
+        <div class="button-group">
+            <button onclick="copyJsonOutput()" class="btn-copy">📋 کپی JSON</button>
+            <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;flex:1;">
+                <button class="btn-github">📝 GitHub</button>
+            </a>
         </div>
-        
-        <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;">
-            <button class="btn-github">📝 باز کردن GitHub</button>
-        </a>
+        <div class="info-box" style="margin-top:15px;">
+            <b>🎯 مراحل:</b><br>
+            1. دکمه "کپی JSON" را بزن<br>
+            2. روی "GitHub" کلیک کن<br>
+            3. همه محتوا را پاک کن (Ctrl+A → Delete)<br>
+            4. Paste کن<br>
+            5. Commit changes<br>
+            6. کد <b>${code}</b> را به مشتری بده!
+        </div>
     `;
     
-    // پاک کردن فرم
     document.getElementById('custName').value = '';
     document.getElementById('custPhone').value = '';
     document.getElementById('custCity').value = '';
 }
 
+async function loadLicenses() {
+    document.getElementById('licensesList').innerHTML = '<p style="text-align:center;padding:20px;">در حال بارگذاری...</p>';
+    document.getElementById('deleteResult').innerHTML = '';
+    await loadCurrentLicenses();
+    displayLicenses();
+}
+
+function displayLicenses() {
+    const list = document.getElementById('licensesList');
+    const stats = document.getElementById('stats');
+    
+    if (currentLicenses.length === 0) {
+        list.innerHTML = '<p style="text-align:center;padding:20px;color:#999;">هیچ کدی موجود نیست</p>';
+        stats.style.display = 'none';
+        return;
+    }
+    
+    stats.style.display = 'flex';
+    let active = 0, locked = 0, expired = 0, totalRevenue = 0;
+    const today = new Date();
+    
+    list.innerHTML = '';
+    
+    currentLicenses.forEach((lic, index) => {
+        const expDate = new Date(lic.expires);
+        const isExpired = expDate < today && lic.expires !== "2099-12-31";
+        const isActive = lic.active !== false;
+        const isLocked = !isActive && !isExpired;
+        
+        totalRevenue += (lic.price || 0);
+        
+        let statusBadge = '';
+        let itemClass = 'license-item';
+        
+        if (isExpired) {
+            statusBadge = '<span class="status-badge badge-expired">❌ منقضی</span>';
+            itemClass += ' expired';
+            expired++;
+        } else if (isLocked) {
+            statusBadge = '<span class="status-badge badge-locked">🔒 قفل شده</span>';
+            itemClass += ' locked';
+            locked++;
+        } else {
+            statusBadge = '<span class="status-badge badge-active">✅ فعال</span>';
+            active++;
+        }
+        
+        const activatedInfo = lic.activated_at ? `<br>🔓 فعال شده: ${lic.activated_at}` : '';
+        
+        let actionButtons = `
+            <button onclick="copyText('${lic.code}')" class="btn-copy">📋 کپی کد</button>
+        `;
+        
+        if (isLocked || isExpired) {
+            actionButtons += `<button onclick="resetLicense(${index})" class="btn-reset">🔄 ریست</button>`;
+        }
+        
+        actionButtons += `<button onclick="deleteLicense(${index})" class="btn-delete">🗑️ حذف</button>`;
+        
+        const item = document.createElement('div');
+        item.className = itemClass;
+        item.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:5px;">
+                <b>${index + 1}. ${lic.customer || '---'}</b>
+                ${statusBadge}
+            </div>
+            <div class="code-box" style="font-size:14px;padding:8px;">${lic.code}</div>
+            <div style="font-size:12px;color:#666;line-height:1.8;">
+                📞 ${lic.phone || '---'} | 🏙️ ${lic.city || '---'}<br>
+                📅 ساخت: ${lic.created} → انقضا: ${lic.expires}<br>
+                💰 ${(lic.price || 0).toLocaleString()} تومان
+                ${activatedInfo}
+            </div>
+            <div class="button-group">
+                ${actionButtons}
+            </div>
+        `;
+        list.appendChild(item);
+    });
+    
+    document.getElementById('totalCount').innerText = currentLicenses.length;
+    document.getElementById('activeCount').innerText = active;
+    document.getElementById('lockedCount').innerText = locked;
+    document.getElementById('expiredCount').innerText = expired;
+    document.getElementById('totalRevenue').innerText = totalRevenue.toLocaleString();
+}
+
+function deleteLicense(index) {
+    const lic = currentLicenses[index];
+    if (!confirm(`❗ آیا مطمئنی می‌خواهی این کد را حذف کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nاین عمل قابل بازگشت نیست!`)) {
+        return;
+    }
+    
+    currentLicenses.splice(index, 1);
+    showJsonResult('🗑️ کد حذف شد!', 'کد از لیست حذف شد. حالا در GitHub paste کن:');
+    displayLicenses();
+}
+
+function resetLicense(index) {
+    const lic = currentLicenses[index];
+    if (!confirm(`🔄 آیا می‌خواهی این کد را ریست کنی؟\n\nکد: ${lic.code}\nمشتری: ${lic.customer}\n\nبعد از ریست، مشتری می‌تواند دوباره روی گوشی جدید فعال کند.`)) {
+        return;
+    }
+    
+    currentLicenses[index].active = true;
+    currentLicenses[index].activated_at = "";
+    
+    showJsonResult('🔄 کد ریست شد!', 'کد دوباره فعال شد. حالا در GitHub paste کن:');
+    displayLicenses();
+}
+
+function showJsonResult(title, message) {
+    const fullJson = { licenses: currentLicenses };
+    const jsonString = JSON.stringify(fullJson, null, 2);
+    
+    document.getElementById('deleteResult').innerHTML = `
+        <div class="success-box" style="margin-top:15px;">
+            <h3 style="margin-bottom:10px;">${title}</h3>
+            <p style="font-size:13px;">${message}</p>
+        </div>
+        <label>JSON جدید:</label>
+        <textarea id="jsonAction" readonly>${jsonString}</textarea>
+        <div class="button-group">
+            <button onclick="copyActionJSON()" class="btn-copy">📋 کپی JSON</button>
+            <a href="https://github.com/navidsad1391-boop/ahkam-license/edit/main/licenses.json" target="_blank" style="text-decoration:none;flex:1;">
+                <button class="btn-github">📝 GitHub</button>
+            </a>
+        </div>
+        <div class="info-box" style="margin-top:15px;">
+            <b>🎯 برای تأیید تغییرات:</b><br>
+            1. دکمه "کپی JSON" را بزن<br>
+            2. روی "GitHub" کلیک کن<br>
+            3. همه محتوا را پاک کن<br>
+            4. Paste کن<br>
+            5. Commit changes بزن<br>
+            ⚠️ تا Commit نکنی، تغییرات اعمال نمی‌شود!
+        </div>
+    `;
+}
+
+async function loadJSON() {
+    document.getElementById('jsonView').value = 'در حال بارگذاری...';
+    await loadCurrentLicenses();
+    displayJSON();
+}
+
+function displayJSON() {
+    const fullJson = { licenses: currentLicenses };
+    const jsonString = JSON.stringify(fullJson, null, 2);
+    document.getElementById('jsonView').value = jsonString;
+}
+
 function copyText(text) {
     navigator.clipboard.writeText(text).then(() => {
-        alert("✅ کد کپی شد: " + text);
+        alert("✅ کپی شد: " + text);
     }).catch(() => {
         const el = document.createElement('textarea');
         el.value = text;
@@ -228,99 +414,30 @@ function copyText(text) {
     });
 }
 
-function copyJSON() {
+function copyJsonOutput() {
     const textarea = document.getElementById('jsonOutput');
     textarea.select();
-    textarea.setSelectionRange(0, 99999);
-    
-    try {
-        document.execCommand('copy');
-        alert("✅ JSON کامل کپی شد!\n\nحالا:\n1. روی دکمه GitHub بزن\n2. همه محتوا را پاک کن\n3. Paste کن\n4. Commit changes");
-    } catch (e) {
-        navigator.clipboard.writeText(textarea.value).then(() => {
-            alert("✅ JSON کپی شد!");
-        });
-    }
+    document.execCommand('copy');
+    alert("✅ JSON کپی شد! حالا در GitHub paste کن");
 }
 
-async function loadLicenses() {
-    const listDiv = document.getElementById('licensesList');
-    listDiv.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">در حال بارگذاری...</p>';
-    
-    await loadCurrentLicenses();
-    
-    listDiv.innerHTML = '';
-    
-    if (currentLicenses.length > 0) {
-        const ul = document.createElement('ul');
-        ul.className = 'count-list';
-        
-        currentLicenses.forEach((lic, index) => {
-            const li = document.createElement('li');
-            li.className = 'count-item';
-            
-            const today = new Date();
-            const expDate = new Date(lic.expires);
-            const isExpired = expDate < today && lic.expires !== "2099-12-31";
-            const status = isExpired ? '❌ منقضی' : '✅ فعال';
-            
-            li.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <b>${index + 1}. ${lic.customer || '---'}</b>
-                    <span>${status}</span>
-                </div>
-                <div class="code-box" style="font-size:14px;padding:8px;">${lic.code}</div>
-                <div style="font-size:12px;color:#666;">
-                    📞 ${lic.phone || '---'} | 🏙️ ${lic.city || '---'}<br>
-                    📅 ${lic.created} → ${lic.expires}<br>
-                    💰 ${lic.price ? lic.price.toLocaleString() : 0} تومان
-                </div>
-                <button onclick="copyText('${lic.code}')" class="btn-copy" style="margin-top:8px;padding:6px;font-size:12px;">📋 کپی کد</button>
-            `;
-            
-            ul.appendChild(li);
-        });
-        
-        listDiv.appendChild(ul);
-        
-        const countInfo = document.createElement('p');
-        countInfo.style.textAlign = 'center';
-        countInfo.style.marginTop = '15px';
-        countInfo.innerHTML = `<b>مجموع: ${currentLicenses.length} کد</b>`;
-        listDiv.appendChild(countInfo);
-    } else {
-        listDiv.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">هیچ کدی موجود نیست</p>';
-    }
+function copyActionJSON() {
+    const textarea = document.getElementById('jsonAction');
+    textarea.select();
+    document.execCommand('copy');
+    alert("✅ JSON کپی شد! حالا در GitHub paste کن و Commit بزن");
 }
 
-function showFullJSON() {
-    const div = document.getElementById('fullJsonDiv');
-    if (currentLicenses.length === 0) {
-        alert("اول کدها را بارگذاری کن!");
-        return;
-    }
-    
-    const fullJson = { licenses: currentLicenses };
-    const jsonString = JSON.stringify(fullJson, null, 2);
-    
-    div.innerHTML = `
-        <label style="margin-top:15px;">JSON کامل فایل licenses.json:</label>
-        <textarea rows="20" readonly>${jsonString}</textarea>
-        <button onclick="copyFullJSON()" class="btn-copy">📋 کپی</button>
-    `;
-    
-    div.querySelector('textarea').id = 'fullJsonTextarea';
-}
-
-function copyFullJSON() {
-    const textarea = document.getElementById('fullJsonTextarea');
+function copyJSON() {
+    const textarea = document.getElementById('jsonView');
     textarea.select();
     document.execCommand('copy');
     alert("✅ JSON کپی شد!");
 }
 
-// بارگذاری اولیه
-window.addEventListener('load', loadCurrentLicenses);
+window.addEventListener('load', () => {
+    loadCurrentLicenses();
+});
 </script>
 
 </body>
