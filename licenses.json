@@ -19,9 +19,9 @@
       "created": "2026-08-18",
       "expires": "2026-09-17",
       "duration_days": 30,
-      "active": true,
+      "active": false,
       "price": 400000,
-      "activated_at": ""
+      "activated_at": "۱۴۰۵/۵/۲۷, ۸:۴۲:۱۴"
     }
   ]
 }
