@@ -21,7 +21,7 @@
       "duration_days": 30,
       "active": false,
       "price": 400000,
-      "activated_at": "۱۴۰۵/۵/۲۷, ۸:۴۲:۱۴"
+      "activated_at": "۱۴۰۵\/۵\/۲۷, ۸:۴۲:۱۴"
     },
     {
       "code": "KAFI-SZE3-KDGQ",
@@ -31,9 +31,9 @@
       "created": "2026-08-19",
       "expires": "2027-08-19",
       "duration_days": 365,
-      "active": true,
+      "active": false,
       "price": 300000,
-      "activated_at": ""
+      "activated_at": "۲۰۲۶-۰۸-۱۹ ۱۲:۱۵:۱۵"
     }
   ]
 }
