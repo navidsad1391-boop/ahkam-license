@@ -22,6 +22,18 @@
       "active": false,
       "price": 400000,
       "activated_at": "۱۴۰۵/۵/۲۷, ۸:۴۲:۱۴"
+    },
+    {
+      "code": "KAFI-SZE3-KDGQ",
+      "customer": "ایمان طاهری ۲",
+      "phone": "09138069769",
+      "city": "اصفهان",
+      "created": "2026-08-19",
+      "expires": "2027-08-19",
+      "duration_days": 365,
+      "active": true,
+      "price": 300000,
+      "activated_at": ""
     }
   ]
 }
